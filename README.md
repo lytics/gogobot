@@ -5,8 +5,11 @@ gogobot is a Golang port of the [BotD JavaScript library](https://github.com/fin
 ## Features
 
 - Server-side bot detection for web applications
+- Browser parsing and version extraction from user agents
 - HTTP middleware for easy integration
 - Supports detection of various automation tools and frameworks
+- Mobile device detection
+- Browser version compatibility checking
 - Lightweight and fast detection algorithms
 - Compatible with popular Go web frameworks
 
@@ -78,6 +81,58 @@ func main() {
     })
     
     http.ListenAndServe(":8080", r)
+}
+```
+
+### Browser Parsing
+
+```go
+package main
+
+import (
+    "fmt"
+    "net/http"
+    
+    "github.com/lytics/gogobot"
+)
+
+func main() {
+    // Parse browser from user agent string
+    userAgent := "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    
+    browserInfo := gogobot.ParseBrowser(userAgent)
+    fmt.Printf("Browser: %s %s\n", browserInfo.Name, browserInfo.Version)
+    fmt.Printf("Browser Family: %s\n", browserInfo.GetBrowserFamily())
+    fmt.Printf("Is Mobile: %v\n", browserInfo.IsMobile())
+    
+    // Parse browser from HTTP request
+    req, _ := http.NewRequest("GET", "/", nil)
+    req.Header.Set("User-Agent", userAgent)
+    
+    browserInfo = gogobot.ParseBrowserFromHTTPRequest(req)
+    
+    // Check browser version compatibility
+    minVersions := map[gogobot.BrowserName]string{
+        gogobot.BrowserChrome:  "100.0.0.0",
+        gogobot.BrowserFirefox: "100.0.0.0",
+        gogobot.BrowserSafari:  "15.0",
+    }
+    
+    isSupported := browserInfo.IsSupported(minVersions)
+    fmt.Printf("Browser supported: %v\n", isSupported)
+    
+    // Combined analysis - bot detection + browser parsing
+    browserInfo, botResult, err := gogobot.GetBrowserInfo(req)
+    if err != nil {
+        fmt.Printf("Error: %v\n", err)
+        return
+    }
+    
+    if botResult.Bot {
+        fmt.Printf("Bot detected: %s\n", botResult.BotKind)
+    } else {
+        fmt.Printf("Legitimate browser: %s %s\n", browserInfo.Name, browserInfo.Version)
+    }
 }
 ```
 

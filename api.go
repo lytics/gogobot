@@ -89,3 +89,52 @@ func AnalyzeHeaders(headers map[string][]string) BotDetectionResult {
 
 	return BotDetectionResult{Bot: false}
 }
+
+// ParseBrowser extracts browser information from a user agent string
+// This is a convenience function that wraps ParseBrowserFromUserAgent
+func ParseBrowser(userAgent string) BrowserInfo {
+	return ParseBrowserFromUserAgent(userAgent)
+}
+
+// ParseBrowserFromHTTPRequest extracts browser information from an HTTP request
+// This is a convenience function that wraps ParseBrowserFromRequest
+func ParseBrowserFromHTTPRequest(req *http.Request) BrowserInfo {
+	return ParseBrowserFromRequest(req)
+}
+
+// GetBrowserInfo performs comprehensive analysis of an HTTP request
+// Returns both bot detection and browser information
+func GetBrowserInfo(req *http.Request) (BrowserInfo, BotDetectionResult, error) {
+	// Parse browser information
+	browserInfo := ParseBrowserFromRequest(req)
+
+	// Perform bot detection
+	detector := NewDetector()
+	botResult, err := detector.DetectFromRequest(req)
+
+	// Update browser info with bot detection results if needed
+	if botResult.Bot && !browserInfo.IsBot {
+		browserInfo.IsBot = true
+		browserInfo.BotKind = botResult.BotKind
+	}
+
+	return browserInfo, botResult, err
+}
+
+// IsSupportedBrowser checks if the browser meets minimum version requirements
+func IsSupportedBrowser(req *http.Request, minVersions map[BrowserName]string) bool {
+	browserInfo := ParseBrowserFromRequest(req)
+	return browserInfo.IsSupported(minVersions)
+}
+
+// GetBrowserFamily returns the browser family from a user agent string
+func GetBrowserFamily(userAgent string) string {
+	browserInfo := ParseBrowserFromUserAgent(userAgent)
+	return browserInfo.GetBrowserFamily()
+}
+
+// IsMobileBrowser checks if the request comes from a mobile browser
+func IsMobileBrowser(req *http.Request) bool {
+	browserInfo := ParseBrowserFromRequest(req)
+	return browserInfo.IsMobile()
+}

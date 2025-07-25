@@ -54,6 +54,33 @@ type BotDetectionResult struct {
 	BotKind BotKind `json:"botKind,omitempty"`
 }
 
+// BrowserName represents different browser types
+type BrowserName string
+
+const (
+	BrowserChrome    BrowserName = "Chrome"
+	BrowserFirefox   BrowserName = "Firefox"
+	BrowserSafari    BrowserName = "Safari"
+	BrowserEdge      BrowserName = "Edge"
+	BrowserIE        BrowserName = "IE"
+	BrowserOpera     BrowserName = "Opera"
+	BrowserSamsung   BrowserName = "Samsung"
+	BrowserUCBrowser BrowserName = "UCBrowser"
+	BrowserYandex    BrowserName = "Yandex"
+	BrowserVivaldi   BrowserName = "Vivaldi"
+	BrowserBrave     BrowserName = "Brave"
+	BrowserUnknown   BrowserName = "Unknown"
+)
+
+// BrowserInfo represents parsed browser information
+type BrowserInfo struct {
+	Name    BrowserName `json:"name"`
+	Version string      `json:"version"`
+	IsBot   bool        `json:"isBot"`
+	BotKind BotKind     `json:"botKind,omitempty"`
+	RawUA   string      `json:"rawUserAgent,omitempty"`
+}
+
 // Component represents a data component with state and value
 type Component[T any] interface {
 	GetState() State
