@@ -45,6 +45,11 @@ const (
 	BotKindBot            BotKind = "bot"
 	BotKindCrawler        BotKind = "crawler"
 	BotKindSpider         BotKind = "spider"
+	BotKindGPTBot         BotKind = "gptbot"
+	BotKindChatGPT        BotKind = "chatgpt"
+	BotKindOpenAI         BotKind = "openai"
+	BotKindClaude         BotKind = "claude"
+	BotKindAIAgent        BotKind = "ai_agent"
 	BotKindUnknown        BotKind = "unknown"
 )
 

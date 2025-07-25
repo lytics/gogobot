@@ -5,6 +5,7 @@ gogobot is a Golang port of the [BotD JavaScript library](https://github.com/fin
 ## Features
 
 - Server-side bot detection for web applications
+- **GPT and AI agent detection** (ChatGPT, GPTBot, Claude, etc.)
 - Browser parsing and version extraction from user agents
 - HTTP middleware for easy integration
 - Supports detection of various automation tools and frameworks
@@ -132,6 +133,62 @@ func main() {
         fmt.Printf("Bot detected: %s\n", botResult.BotKind)
     } else {
         fmt.Printf("Legitimate browser: %s %s\n", browserInfo.Name, browserInfo.Version)
+    }
+}
+```
+
+### GPT and AI Agent Detection
+
+```go
+package main
+
+import (
+    "fmt"
+    "net/http"
+    
+    "github.com/lytics/gogobot"
+)
+
+func main() {
+    // Detect GPT agents from user agent strings
+    userAgent := "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; GPTBot/1.0; +https://openai.com/gptbot)"
+    
+    isGPT, gptKind := gogobot.IsGPTAgent(userAgent)
+    if isGPT {
+        fmt.Printf("GPT Agent detected: %s\n", gptKind)
+    }
+    
+    // Check for specific AI agents
+    isChatGPT := gogobot.IsChatGPT("ChatGPT-User/1.0")
+    isOpenAI := gogobot.IsOpenAIBot("GPTBot/1.0")
+    
+    fmt.Printf("Is ChatGPT: %v\n", isChatGPT)
+    fmt.Printf("Is OpenAI Bot: %v\n", isOpenAI)
+    
+    // Analyze HTTP requests for AI agents
+    req, _ := http.NewRequest("GET", "/", nil)
+    req.Header.Set("User-Agent", userAgent)
+    
+    isAI, agentType, botResult, err := gogobot.GetAIAgentInfo(req)
+    if err != nil {
+        fmt.Printf("Error: %v\n", err)
+        return
+    }
+    
+    if isAI {
+        fmt.Printf("AI Agent: %s\n", agentType)
+        
+        // Handle different AI agents appropriately
+        switch agentType {
+        case gogobot.BotKindGPTBot:
+            fmt.Println("Action: Allow OpenAI training crawler")
+        case gogobot.BotKindChatGPT:
+            fmt.Println("Action: Allow ChatGPT browsing")
+        case gogobot.BotKindClaude:
+            fmt.Println("Action: Allow Claude AI assistant")
+        default:
+            fmt.Println("Action: Monitor unknown AI agent")
+        }
     }
 }
 ```

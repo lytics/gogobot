@@ -365,15 +365,29 @@ func detectUserAgent(components *ComponentDict) *BotDetectionResult {
 		kind     BotKind
 		patterns []string
 	}{
+		// AI Agents (check first as they're highly specific)
+		{BotKindGPTBot, []string{"gptbot", "gpt-bot"}},
+		{BotKindChatGPT, []string{"chatgpt-user", "chatgpt", "openai-chatgpt"}},
+		{BotKindOpenAI, []string{"openai", "openai-bot", "openai-crawler"}},
+		{BotKindClaude, []string{"claude-web", "claude", "anthropic"}},
+		{BotKindAIAgent, []string{"ai-agent", "aiagent", "ai_agent", "artificial intelligence", "language model", "llm", "gpt-", "claude-", "bard", "gemini-pro"}},
+
+		// Automation Tools
 		{BotKindPhantomJS, []string{"phantomjs"}},
 		{BotKindSelenium, []string{"selenium", "webdriver"}},
 		{BotKindElectron, []string{"electron"}},
 		{BotKindHeadlessChrome, []string{"headlesschrome", "headless"}},
 		{BotKindPlaywright, []string{"playwright"}},
 		{BotKindPuppeteer, []string{"puppeteer"}},
+
+		// Command Line Tools
 		{BotKindCurl, []string{"curl/"}},
 		{BotKindWget, []string{"wget/"}},
+
+		// Search Engine Crawlers
 		{BotKindCrawler, []string{"googlebot", "bingbot", "slurp", "duckduckbot", "baiduspider"}}, // Check crawlers before generic "bot"
+
+		// Generic Bots (last to avoid false positives)
 		{BotKindBot, []string{"bot", "crawler", "spider", "scraper"}},
 	}
 

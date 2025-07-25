@@ -138,3 +138,58 @@ func IsMobileBrowser(req *http.Request) bool {
 	browserInfo := ParseBrowserFromRequest(req)
 	return browserInfo.IsMobile()
 }
+
+// IsGPTAgent checks if a user agent string indicates a GPT or AI agent
+func IsGPTAgent(userAgent string) (bool, BotKind) {
+	isBot, botKind := IsBotUserAgent(userAgent)
+	if !isBot {
+		return false, ""
+	}
+
+	// Check if it's specifically a GPT/AI agent
+	switch botKind {
+	case BotKindGPTBot, BotKindChatGPT, BotKindOpenAI, BotKindClaude, BotKindAIAgent:
+		return true, botKind
+	default:
+		return false, ""
+	}
+}
+
+// IsGPTRequest checks if an HTTP request comes from a GPT or AI agent
+func IsGPTRequest(req *http.Request) (bool, BotKind) {
+	userAgent := req.Header.Get("User-Agent")
+	return IsGPTAgent(userAgent)
+}
+
+// IsChatGPT checks specifically for ChatGPT user agents
+func IsChatGPT(userAgent string) bool {
+	isGPT, botKind := IsGPTAgent(userAgent)
+	return isGPT && (botKind == BotKindChatGPT || botKind == BotKindOpenAI)
+}
+
+// IsOpenAIBot checks specifically for OpenAI bot user agents
+func IsOpenAIBot(userAgent string) bool {
+	isGPT, botKind := IsGPTAgent(userAgent)
+	return isGPT && (botKind == BotKindGPTBot || botKind == BotKindOpenAI || botKind == BotKindChatGPT)
+}
+
+// GetAIAgentInfo performs comprehensive AI agent analysis of an HTTP request
+// Returns whether it's an AI agent, the specific type, and any errors
+func GetAIAgentInfo(req *http.Request) (isAI bool, agentType BotKind, botResult BotDetectionResult, err error) {
+	// Perform full bot detection
+	detector := NewDetector()
+	botResult, err = detector.DetectFromRequest(req)
+	if err != nil {
+		return false, "", botResult, err
+	}
+
+	// Check if it's specifically an AI agent
+	if botResult.Bot {
+		switch botResult.BotKind {
+		case BotKindGPTBot, BotKindChatGPT, BotKindOpenAI, BotKindClaude, BotKindAIAgent:
+			return true, botResult.BotKind, botResult, nil
+		}
+	}
+
+	return false, "", botResult, nil
+}
