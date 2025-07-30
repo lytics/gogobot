@@ -24,7 +24,6 @@ func ParseBrowserFromUserAgent(userAgent string) BrowserInfo {
 	// First check if it's a bot
 	isBot, botKind := IsBotUserAgent(ua)
 	if isBot {
-		browserInfo.IsBot = true
 		browserInfo.BotKind = botKind
 		browserInfo.Name = BrowserUnknown
 		return browserInfo
@@ -177,7 +176,7 @@ func (bi BrowserInfo) GetMajorVersion() string {
 
 // IsSupported checks if the browser version meets minimum requirements
 func (bi BrowserInfo) IsSupported(minVersions map[BrowserName]string) bool {
-	if bi.IsBot {
+	if bi.IsBot() {
 		return false
 	}
 

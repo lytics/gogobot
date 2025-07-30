@@ -164,8 +164,8 @@ func TestParseBrowserFromUserAgent(t *testing.T) {
 				t.Errorf("Expected version %s, got %s", tt.expectedVersion, result.Version)
 			}
 
-			if result.IsBot != tt.expectedIsBot {
-				t.Errorf("Expected IsBot %v, got %v", tt.expectedIsBot, result.IsBot)
+			if result.IsBot() != tt.expectedIsBot {
+				t.Errorf("Expected IsBot %v, got %v", tt.expectedIsBot, result.IsBot())
 			}
 
 			if result.GetBrowserFamily() != tt.expectedFamily {
@@ -228,7 +228,6 @@ func TestBrowserInfoMethods(t *testing.T) {
 	browserInfo := BrowserInfo{
 		Name:    BrowserChrome,
 		Version: "120.5.1.2",
-		IsBot:   false,
 	}
 
 	// Test GetMajorVersion
@@ -253,7 +252,7 @@ func TestBrowserInfoMethods(t *testing.T) {
 	}
 
 	// Test with bot
-	browserInfo.IsBot = true
+	browserInfo.BotKind = BotKindBot
 	if browserInfo.IsSupported(minVersions) {
 		t.Error("Expected bot to be unsupported")
 	}

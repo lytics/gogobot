@@ -113,8 +113,7 @@ func GetBrowserInfo(req *http.Request) (BrowserInfo, BotDetectionResult, error) 
 	botResult, err := detector.DetectFromRequest(req)
 
 	// Update browser info with bot detection results if needed
-	if botResult.Bot && !browserInfo.IsBot {
-		browserInfo.IsBot = true
+	if botResult.Bot && !browserInfo.IsBot() {
 		browserInfo.BotKind = botResult.BotKind
 	}
 

@@ -32,8 +32,8 @@ func main() {
 		fmt.Printf("Major Version: %s\n", browserInfo.GetMajorVersion())
 		fmt.Printf("Browser Family: %s\n", browserInfo.GetBrowserFamily())
 		fmt.Printf("Is Mobile: %v\n", browserInfo.IsMobile())
-		fmt.Printf("Is Bot: %v\n", browserInfo.IsBot)
-		if browserInfo.IsBot {
+		fmt.Printf("Is Bot: %v\n", browserInfo.IsBot())
+		if browserInfo.IsBot() {
 			fmt.Printf("Bot Kind: %s\n", browserInfo.BotKind)
 		}
 		fmt.Println()
@@ -57,7 +57,7 @@ func main() {
 	fmt.Printf("Browser: %s %s\n", browserInfo.Name, browserInfo.Version)
 	fmt.Printf("Browser Family: %s\n", browserInfo.GetBrowserFamily())
 	fmt.Printf("Is Mobile: %v\n", browserInfo.IsMobile())
-	fmt.Printf("Is Bot (Browser Analysis): %v\n", browserInfo.IsBot)
+	fmt.Printf("Is Bot (Browser Analysis): %v\n", browserInfo.IsBot())
 	fmt.Printf("Is Bot (Full Detection): %v\n", botResult.Bot)
 	if botResult.Bot {
 		fmt.Printf("Bot Type: %s\n", botResult.BotKind)
@@ -175,7 +175,7 @@ func main() {
 		fmt.Printf("  User Agent: %s\n", ua)
 		fmt.Printf("  Browser: %s %s\n", browserInfo.Name, browserInfo.Version)
 		fmt.Printf("  Browser Family: %s\n", browserInfo.GetBrowserFamily())
-		fmt.Printf("  Is Bot (Browser Parser): %v\n", browserInfo.IsBot)
+		fmt.Printf("  Is Bot (Browser Parser): %v\n", browserInfo.IsBot())
 		fmt.Printf("  Is Bot (Full Detector): %v\n", botResult.Bot)
 		if botResult.Bot {
 			fmt.Printf("  Bot Type: %s\n", botResult.BotKind)

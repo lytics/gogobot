@@ -199,7 +199,7 @@ func main() {
 		browserInfo := gogobot.ParseBrowserFromHTTPRequest(req)
 		fmt.Printf("  Browser: %s %s\n", browserInfo.Name, browserInfo.Version)
 		fmt.Printf("  Browser Family: %s\n", browserInfo.GetBrowserFamily())
-		fmt.Printf("  Is Bot (Browser Analysis): %v\n", browserInfo.IsBot)
+		fmt.Printf("  Is Bot (Browser Analysis): %v\n", browserInfo.IsBot())
 
 		// Check for AI agents
 		isGPT, gptKind := gogobot.IsGPTRequest(req)

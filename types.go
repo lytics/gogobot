@@ -81,9 +81,23 @@ const (
 type BrowserInfo struct {
 	Name    BrowserName `json:"name"`
 	Version string      `json:"version"`
-	IsBot   bool        `json:"isBot"`
 	BotKind BotKind     `json:"botKind,omitempty"`
 	RawUA   string      `json:"rawUserAgent,omitempty"`
+}
+
+// IsAIAgent returns true if the browser is detected as an AI agent
+func (b *BrowserInfo) IsAIAgent() bool {
+	switch b.BotKind {
+	case BotKindGPTBot, BotKindChatGPT, BotKindOpenAI, BotKindClaude, BotKindAIAgent:
+		return true
+	default:
+		return false
+	}
+}
+
+// IsBot returns true if the browser is detected as a bot
+func (b *BrowserInfo) IsBot() bool {
+	return b.BotKind != "" && b.BotKind != BotKindUnknown
 }
 
 // Component represents a data component with state and value
